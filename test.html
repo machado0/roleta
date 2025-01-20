@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Champion Selector</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .lane-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 10px;
+        }
+
+        .champion-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+
+        .lane-buttons {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        button {
+            margin: 0 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .champion-list {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+    }
+    .champion-list img {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid #ccc;
+    }
+    </style>
+</head>
+<body>
+    <div id="lanes" class="lane-buttons">
+        <div id="top-lane" class="lane-container">
+            <img src="ping.png" alt="No Champion Selected" class="champion-image" id="top-img">
+            <button onclick="selectChampion('top')">Top Lane</button>
+        </div>
+        <div id="jungle-lane" class="lane-container">
+            <img src="ping.png" alt="No Champion Selected" class="champion-image" id="jungle-img">
+            <button onclick="selectChampion('jungle')">Jungle Lane</button>
+        </div>
+        <div id="mid-lane" class="lane-container">
+            <img src="ping.png" alt="No Champion Selected" class="champion-image" id="mid-img">
+            <button onclick="selectChampion('mid')">Mid Lane</button>
+        </div>
+        <div id="adc-lane" class="lane-container">
+            <img src="ping.png" alt="No Champion Selected" class="champion-image" id="adc-img">
+            <button onclick="selectChampion('adc')">ADC Lane</button>
+        </div>
+        <div id="support-lane" class="lane-container">
+            <img src="ping.png" alt="No Champion Selected" class="champion-image" id="support-img">
+            <button onclick="selectChampion('support')">Support Lane</button>
+        </div>
+    </div>
+
+    <div id="champion-display" class="champion-list"></div>
+
+
+    <script>
+        async function fetchChampionImages() {
+            try {
+                const response = await fetch('./championImages.json');
+                return await response.json();
+            } catch (error) {
+                console.error('Error loading champion images:', error);
+                return {};
+            }
+        }
+
+        let championImages = {};
+
+        async function initialize() {
+            championImages = await fetchChampionImages();
+            // Initialize with placeholder images
+            ['top', 'jungle', 'mid', 'adc', 'support'].forEach(lane => {
+                updateChampionImage(lane);
+            });
+        }
+
+        function getRandomChampionByLane(lane) {
+            const laneChampions = {
+                top: ["Ambessa", "Gragas", "Heimerdinger", "Karma", "Rengar", "Smolder", "Sylas", "Twisted Fate", "Vayne", "Vladimir", "Warwick", "Wukong", "Zac", "Aatrox", "Akali", "Aurora", "Camille", "Cho'Gath", "Darius", "Dr. Mundo", "Fiora", "Gangplank", "Garen", "Gnar", "Gwen", "Illaoi", "Irelia", "Jax", "Jayce", "K'Sante", "Kayle", "Kennen", "Kled", "Malphite", "Mordekaiser", "Nasus", "Olaf", "Ornn", "Pantheon", "Poppy", "Quinn", "Renekton", "Riven", "Rumble", "Sett", "Shen", "Singed", "Sion", "Skarner", "Tahm Kench", "Teemo", "Trundle", "Tryndamere", "Udyr", "Urgot", "Volibear", "Yasuo", "Yone", "Yorick"],
+                jungle: ["Gragas", "Rengar", "Warwick", "Wukong", "Zac", "Amumu", "Bel'Veth", "Brand", "Briar", "Diana", "Ekko", "Elise", "Evelynn", "Fiddlesticks", "Graves", "Hecarim", "Ivern", "Jarvan IV", "Karthus", "Kayn", "Kha'Zix", "Kindred", "Lee Sin", "Lillia", "Maokai", "Master Yi", "Nocturne", "Nidalee", "Nunu & Willump", "Rammus", "Rek'Sai", "Sejuani", "Shaco", "Shyvana", "Taliyah", "Vi", "Viego", "Xin Zhao"],
+                mid: ["Ambessa", "Gragas", "Karma", "Smolder", "Sylas", "Twisted Fate", "Vladimir", "Ahri", "Akali", "Aurora", "Irelia", "Jayce", "Malphite", "Naafiri", "Ryze", "Syndra", "Taliyah", "Yasuo", "Yone", "Cassiopeia", "Corki", "Diana", "Ekko", "Fizz", "Galio", "Hwei", "Kassadin", "Katarina", "LeBlanc", "Lissandra", "Lux", "Malzahar", "Orianna", "Qiyana", "Swain", "Talon", "Tristana", "Veigar", "Vel'Koz", "Vex", "Viktor", "Xerath", "Zed", "Ziggs", "Zoe"],
+                adc: ["Smolder", "Twisted Fate", "Vayne", "Aphelios", "Ashe", "Draven", "Ezreal", "Jhin", "Jinx", "Kai'Sa", "Kalista", "Kog'Maw", "Lucian", "Miss Fortune", "Nilah", "Samira", "Sivir", "Tristana", "Twitch", "Varus", "Xayah", "Zeri"],
+                support: ["Heimerdinger", "Karma", "Zac", "Camille", "Malphite", "Pantheon", "Shen", "Tahm Kench", "Teemo", "Amumu", "Alistar", "Bard", "Blitzcrank", "Braum", "Galio", "Janna", "Leona", "Lulu", "Lux", "Milio", "Morgana", "Nami", "Nautilus", "Neeko", "Pyke", "Rakan", "Rell", "Renata Glasc", "Senna", "Seraphine", "Sona", "Soraka", "Swain", "Taric", "Thresh", "Twitch", "Vel'Koz", "Yuumi", "Zilean", "Zyra"]
+            };
+            const champions = laneChampions[lane] || [];
+            if (champions.length === 0) return null;
+            const randomIndex = Math.floor(Math.random() * champions.length);
+            console.log(champions[randomIndex])
+            return champions[randomIndex];
+        }
+
+        function updateChampionImage(lane, championName = null) {
+            const imageElement = document.getElementById(`${lane}-img`);
+            if (championName) {
+                imageElement.src = championImages[championName] || "ping.png";
+                imageElement.alt = championName;
+            } else {
+                imageElement.src = "ping.png"; // Placeholder image
+                imageElement.alt = "No Champion Selected";
+                console.log("No image Found for " + championName)
+            }
+        }
+
+        function selectChampion(lane) {
+            const champion = getRandomChampionByLane(lane);
+            if (champion) {
+                updateChampionImage(lane, champion);
+            } else {
+                console.error(`No champions found for lane: ${lane}`);
+            }
+        }
+
+        function getAllChampionsByLane(lane) {
+        const laneChampions = {
+            top: ["Ambessa", "Gragas", "Heimerdinger", "Karma", "Rengar", "Smolder", "Sylas", "Twisted Fate", "Vayne", "Vladimir", "Warwick", "Wukong", "Zac", "Aatrox", "Akali", "Aurora", "Camille", "Cho'Gath", "Darius", "Dr. Mundo", "Fiora", "Gangplank", "Garen", "Gnar", "Gwen", "Illaoi", "Irelia", "Jax", "Jayce", "K'Sante", "Kayle", "Kennen", "Kled", "Malphite", "Mordekaiser", "Nasus", "Olaf", "Ornn", "Pantheon", "Poppy", "Quinn", "Renekton", "Riven", "Rumble", "Sett", "Shen", "Singed", "Sion", "Skarner", "Tahm Kench", "Teemo", "Trundle", "Tryndamere", "Udyr", "Urgot", "Volibear", "Yasuo", "Yone", "Yorick"],
+            jungle: ["Gragas", "Rengar", "Warwick", "Wukong", "Zac", "Amumu", "Bel'Veth", "Brand", "Briar", "Diana", "Ekko", "Elise", "Evelynn", "Fiddlesticks", "Graves", "Hecarim", "Ivern", "Jarvan IV", "Karthus", "Kayn", "Kha'Zix", "Kindred", "Lee Sin", "Lillia", "Maokai", "Master Yi", "Nocturne", "Nidalee", "Nunu & Willump", "Rammus", "Rek'Sai", "Sejuani", "Shaco", "Shyvana", "Taliyah", "Vi", "Viego", "Xin Zhao"],
+            mid: ["Ambessa", "Gragas", "Karma", "Smolder", "Sylas", "Twisted Fate", "Vladimir", "Ahri", "Akali", "Aurora", "Irelia", "Jayce", "Malphite", "Naafiri", "Ryze", "Syndra", "Taliyah", "Yasuo", "Yone", "Cassiopeia", "Corki", "Diana", "Ekko", "Fizz", "Galio", "Hwei", "Kassadin", "Katarina", "LeBlanc", "Lissandra", "Lux", "Malzahar", "Orianna", "Qiyana", "Swain", "Talon", "Tristana", "Veigar", "Vel'Koz", "Vex", "Viktor", "Xerath", "Zed", "Ziggs", "Zoe"],
+            adc: ["Smolder", "Twisted Fate", "Vayne", "Aphelios", "Ashe", "Draven", "Ezreal", "Jhin", "Jinx", "Kai'Sa", "Kalista", "Kog'Maw", "Lucian", "Miss Fortune", "Nilah", "Samira", "Sivir", "Tristana", "Twitch", "Varus", "Xayah", "Zeri"],
+            support: ["Heimerdinger", "Karma", "Zac", "Camille", "Malphite", "Pantheon", "Shen", "Tahm Kench", "Teemo", "Amumu", "Alistar", "Bard", "Blitzcrank", "Braum", "Galio", "Janna", "Leona", "Lulu", "Lux", "Milio", "Morgana", "Nami", "Nautilus", "Neeko", "Pyke", "Rakan", "Rell", "Renata Glasc", "Senna", "Seraphine", "Sona", "Soraka", "Swain", "Taric", "Thresh", "Twitch", "Vel'Koz", "Yuumi", "Zilean", "Zyra"]
+        };
+        return laneChampions[lane] || [];
+    }
+
+    function updateChampionDisplay(lane) {
+        const championContainer = document.getElementById("champion-display");
+        championContainer.innerHTML = ""; // Clear previous champions
+
+        const champions = getAllChampionsByLane(lane);
+        champions.forEach(champion => {
+            const championImg = document.createElement("img");
+            championImg.src = championImages[champion] || "ping.png"; // Adjust with the real images
+            championImg.alt = champion;
+            championContainer.appendChild(championImg);
+        });
+    }
+
+    function selectChampion(lane) {
+        updateChampionDisplay(lane);
+    }
+
+        // Initialize the app
+        initialize();
+    </script>
+</body>
+</html>
+

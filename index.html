@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset='utf-8'>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aleatorizador de Campeões</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div class="top-text">
+        <p>Roleta feita para aleatorizar a flex da gaplândia!
+            Crédito das edições de imagem: JokaJokinha
+        </p>
+    </div>
+
+    <div class="header">
+        Aleatorizador de Campeões
+    </div>
+
+    <div id="lanes" class="lane-buttons">
+        <div id="top-lane" class="lane-container">
+            <img src="/imagens/ping.png" alt="No Champion Selected" class="champion-image" id="top-img">
+            <p id="top">???</p>
+            <button onclick="selectChampion('top')">Top</button>
+            <button onclick="selectRandomChampion('top')">???</button>
+        </div>
+        <div id="jungle-lane" class="lane-container">
+            <img src="/imagens/ping.png" alt="No Champion Selected" class="champion-image" id="jungle-img">
+            <p id="jungle">???</p>
+            <button onclick="selectChampion('jungle')">Jungle</button>
+            <button onclick="selectRandomChampion('jungle')">???</button>
+        </div>
+        <div id="mid-lane" class="lane-container">
+            <img src="/imagens/ping.png" alt="No Champion Selected" class="champion-image" id="mid-img">
+            <p id="mid">???</p>
+            <button onclick="selectChampion('mid')">Mid</button>
+            <button onclick="selectRandomChampion('mid')">???</button>
+        </div>
+        <div id="adc-lane" class="lane-container">
+            <img src="/imagens/ping.png" alt="No Champion Selected" class="champion-image" id="adc-img">
+            <p id="adc">???</p>
+            <button onclick="selectChampion('adc')">ADC</button>
+            <button onclick="selectRandomChampion('adc')">???</button>
+        </div>
+        <div id="support-lane" class="lane-container">
+            <img src="/imagens/ping.png" alt="No Champion Selected" class="champion-image" id="support-img">
+            <p id="support">???</p>
+            <button onclick="selectChampion('support')">Suporte</button>
+            <button onclick="selectRandomChampion('support')">???</button>
+
+        </div>
+    </div>
+
+    <script src="scripts.js"></script>
+</body>
+</html>
