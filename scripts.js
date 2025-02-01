@@ -67,8 +67,10 @@ function updateChampionImage(lane, championName = null) {
 
 async function selectRandomChampion(lane) {
     const champion = getRandomChampion();
+    let iterations = 5;
+
     if (champion) {
-        for (i = 1; i < 5; i++) {
+        for (i = 1; i < iterations; i++) {
             const champion  = getRandomChampionByLane(lane);
             updateChampionImage(lane, champion);
             await delay(250);
@@ -82,12 +84,18 @@ async function selectRandomChampion(lane) {
 }
 
 async function selectChampion(lane) {
-    const champion = getRandomChampionByLane(lane);
+    let iterations = 5;
+    
+    for (let i = 0; i < 5; i++) {
+        updateChampionImage(lane, getRandomChampionByLane(lane));
+        await delay(250); 
+    }
 
-    if (champion) {
-        selectedChampions[lane] = champion;
-        updateChampionImage(lane, champion);
-        document.getElementById(lane).innerText = champion;
+    const finalChampion = getRandomChampionByLane(lane);
+    if (finalChampion) {
+        selectedChampions[lane] = finalChampion;
+        updateChampionImage(lane, finalChampion);
+        document.getElementById(lane).innerText = finalChampion;
     } else {
         console.warn(`No available champions for ${lane}.`);
     }
@@ -183,6 +191,88 @@ async function initialize() {
 async function initializeApp() {
     await initialize();
 }
+
+const spinWheel = document.getElementById("spin-wheel");
+const spinBtn = document.getElementById("spin-button");
+const text = document.getElementById("text");
+
+const spinValues = [
+    { minDegree: 61, maxDegree: 90, value: "Sim" },
+    { minDegree: 31, maxDegree: 60, value: "Não" },
+    { minDegree: 0, maxDegree: 30, value: "Sim" },
+    { minDegree: 331, maxDegree: 360, value: "Não" },
+    { minDegree: 301, maxDegree: 330, value: "Sim" },
+    { minDegree: 271, maxDegree: 300, value: "Não" },
+    { minDegree: 241, maxDegree: 270, value: "Sim" },
+    { minDegree: 211, maxDegree: 240, value: "Não" },
+    { minDegree: 181, maxDegree: 210, value: "Sim" },
+    { minDegree: 151, maxDegree: 180, value: "Não" },
+    { minDegree: 121, maxDegree: 150, value: "Sim" },
+    { minDegree: 91, maxDegree: 120, value: "Não" },
+  ]
+
+const size = [10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10];
+var spinColors = ["#4CAF50", "#F44336"]; 
+
+let spinChart = new Chart(spinWheel, {
+  plugins: [ChartDataLabels],
+  type: "pie",
+  data: {
+    labels: ["Sim", "Não", "Sim", "Não", "Sim", "Não", "Sim", "Não", "Sim", "Não", "Sim", "Não"],
+    datasets: [
+      {
+        backgroundColor: spinColors,
+        data: size,
+      },
+    ],
+  },
+  options: {
+    responsive: true,
+    animation: { duration: 0 },
+    plugins: {
+      tooltip: false,
+      legend: { display: false },
+      datalabels: {
+        rotation: 90,
+        color: "#ffffff",
+        formatter: (_, context) => context.chart.data.labels[context.dataIndex],
+        font: { size: 24 },
+      },
+    },
+  },
+});
+
+const generateValue = (angleValue) => {
+  for (let i of spinValues) {
+    if (angleValue >= i.minDegree && angleValue <= i.maxDegree) {
+      text.innerHTML = `<p id="yes-no">${i.value}!</p>`;
+      spinBtn.disabled = false;
+      break;
+    }
+  }
+};
+
+let count = 0;
+let resultValue = 101;
+spinBtn.addEventListener("click", () => {
+  spinBtn.disabled = true;
+  text.innerHTML = `<p id="spinning">Girando...</p>`;
+  let randomDegree = Math.floor(Math.random() * 360);
+  let rotationInterval = window.setInterval(() => {
+    spinChart.options.rotation += resultValue;
+    spinChart.update();
+    if (spinChart.options.rotation >= 360) {
+      count += 1;
+      resultValue -= 5;
+      spinChart.options.rotation = 0;
+    } else if (count > 15 && spinChart.options.rotation == randomDegree) {
+      generateValue(randomDegree);
+      clearInterval(rotationInterval);
+      count = 0;
+      resultValue = 101;
+    }
+  }, 10);
+});
 
 document.addEventListener('DOMContentLoaded', (event) => {
     initializeApp(); 

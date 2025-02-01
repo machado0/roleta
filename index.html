@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aleatorizador de Campeões</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" 
+    integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
 </head>
 <body>
 
@@ -14,77 +19,91 @@
         </p>
     </div>
 
-    <div class="header">
-        Aleatorizador de Campeões
+    <div class="main-container">
+        
+    
+        <div class="header">
+            Aleatorizador de Campeões
+        </div>
+    
+        <div id="lanes" class="lane-buttons">
+            <div id="top-lane" class="lane-container">
+                <input class="ban-button"
+                    id="top-ban"
+                    data-lane="top"
+                    type="button"
+                    value=""
+                />
+                <div id="dropdown" class="dropdown hidden"></div>
+                <img src="/imagens/ping.png" alt="No Champion Selected" class="champion-image" id="top-img">
+                <p id="top">???</p>
+                <button onclick="selectChampion('top')">Top</button>
+                <button onclick="selectRandomChampion('top')">???</button>
+            </div>
+            <div id="jungle-lane" class="lane-container">
+                <input class="ban-button"
+                    id="jungle-ban"
+                    data-lane="jungle"
+                    type="button"
+                    value=""
+                />
+                <div id="dropdown" class="dropdown hidden"></div>
+                <img src="/imagens/ping.png" alt="No Champion Selected" class="champion-image" id="jungle-img">
+                <p id="jungle">???</p>
+                <button onclick="selectChampion('jungle')">Jungle</button>
+                <button onclick="selectRandomChampion('jungle')">???</button>
+            </div>
+            <div id="mid-lane" class="lane-container">
+                <input class="ban-button"
+                    id="mid-ban"
+                    data-lane="mid"
+                    type="button"
+                    value=""
+                />
+                <div id="dropdown" class="dropdown hidden"></div>
+                <img src="/imagens/ping.png" alt="No Champion Selected" class="champion-image" id="mid-img">
+                <p id="mid">???</p>
+                <button onclick="selectChampion('mid')">Mid</button>
+                <button onclick="selectRandomChampion('mid')">???</button>
+            </div>
+            <div id="adc-lane" class="lane-container">
+                <input class="ban-button"
+                    id="adc-ban"
+                    data-lane="adc"
+                    type="button"
+                    value=""
+                />
+                <div id="dropdown" class="dropdown hidden"></div>
+                <img src="/imagens/ping.png" alt="No Champion Selected" class="champion-image" id="adc-img">
+                <p id="adc">???</p>
+                <button onclick="selectChampion('adc')">ADC</button>
+                <button onclick="selectRandomChampion('adc')">???</button>
+            </div>
+            <div id="support-lane" class="lane-container">
+                <input class="ban-button"
+                    id="support-ban"
+                    data-lane="support"
+                    type="button"
+                    value=""
+                />
+                <div id="dropdown" class="dropdown hidden"></div>
+                <img src="/imagens/ping.png" alt="No Champion Selected" class="champion-image" id="support-img">
+                <p id="support">???</p>
+                <button onclick="selectChampion('support')">Suporte</button>
+                <button id="last-button" onclick="selectRandomChampion('support')">???</button>
+            </div>
+        </div>
+    
+        <div class="wheel-container">
+            <div class="wheel-box">
+                <canvas id="spin-wheel"></canvas>
+                <button id="spin-button">Gire</button>
+                <i class="fa-solid fa-location-arrow"></i>
+            </div>
+            <div id="text">Teste sua sorte!</div>
+        </div>
     </div>
-
-    <div id="lanes" class="lane-buttons">
-        <div id="top-lane" class="lane-container">
-            <input class="ban-button"
-				id="top-ban"
-                data-lane="top"
-				type="button"
-				value=""
-			/>
-            <div id="dropdown" class="dropdown hidden"></div>
-            <img src="/imagens/ping.png" alt="No Champion Selected" class="champion-image" id="top-img">
-            <p id="top">???</p>
-            <button onclick="selectChampion('top')">Top</button>
-            <button onclick="selectRandomChampion('top')">???</button>
-        </div>
-        <div id="jungle-lane" class="lane-container">
-            <input class="ban-button"
-				id="jungle-ban"
-                data-lane="jungle"
-				type="button"
-				value=""
-			/>
-            <div id="dropdown" class="dropdown hidden"></div>
-            <img src="/imagens/ping.png" alt="No Champion Selected" class="champion-image" id="jungle-img">
-            <p id="jungle">???</p>
-            <button onclick="selectChampion('jungle')">Jungle</button>
-            <button onclick="selectRandomChampion('jungle')">???</button>
-        </div>
-        <div id="mid-lane" class="lane-container">
-            <input class="ban-button"
-				id="mid-ban"
-                data-lane="mid"
-				type="button"
-				value=""
-			/>
-            <div id="dropdown" class="dropdown hidden"></div>
-            <img src="/imagens/ping.png" alt="No Champion Selected" class="champion-image" id="mid-img">
-            <p id="mid">???</p>
-            <button onclick="selectChampion('mid')">Mid</button>
-            <button onclick="selectRandomChampion('mid')">???</button>
-        </div>
-        <div id="adc-lane" class="lane-container">
-            <input class="ban-button"
-				id="adc-ban"
-                data-lane="adc"
-				type="button"
-				value=""
-			/>
-            <div id="dropdown" class="dropdown hidden"></div>
-            <img src="/imagens/ping.png" alt="No Champion Selected" class="champion-image" id="adc-img">
-            <p id="adc">???</p>
-            <button onclick="selectChampion('adc')">ADC</button>
-            <button onclick="selectRandomChampion('adc')">???</button>
-        </div>
-        <div id="support-lane" class="lane-container">
-            <input class="ban-button"
-				id="support-ban"
-                data-lane="support"
-				type="button"
-				value=""
-			/>
-            <div id="dropdown" class="dropdown hidden"></div>
-            <img src="/imagens/ping.png" alt="No Champion Selected" class="champion-image" id="support-img">
-            <p id="support">???</p>
-            <button onclick="selectChampion('support')">Suporte</button>
-            <button onclick="selectRandomChampion('support')">???</button>
-        </div>
-    </div>
+      
 
     <script src="scripts.js"></script>
 </body>
